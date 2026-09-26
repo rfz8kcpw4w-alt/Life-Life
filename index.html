@@ -3,36 +3,203 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Life-Life — Tam Sürüm</title>
+    <title>Life-Life — Dünya ve Şehirler</title>
     <style>
-      :root { --bg:#07141d; --panel:#0f1c2a; --text:#ebf3ff; --muted:#b7c5d8; --accent:#7af0a9; }
+      :root {
+        --bg: #07141d;
+        --bg2: #0d1a27;
+        --panel: rgba(11, 22, 34, 0.96);
+        --panel2: rgba(18, 31, 42, 0.95);
+        --soft: rgba(255,255,255,0.04);
+        --text: #ebf3ff;
+        --muted: #b8c7d8;
+        --accent: #7af0a9;
+        --accent2: #7cc7ff;
+        --gold: #f7d77a;
+        --danger: #ff8d8d;
+        --shadow: rgba(0, 0, 0, 0.28);
+      }
+
       * { box-sizing: border-box; }
-      html,body { margin:0; min-height:100%; font-family:Arial,Helvetica,sans-serif; background:linear-gradient(180deg,#07141d 0%,#0d1a27 100%); color:var(--text); }
-      .app { max-width:1300px; margin:0 auto; display:flex; flex-direction:column; gap:16px; padding:16px; }
-      .topbar { display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.02); padding:12px 14px; border-radius:10px; }
-      h1 { margin:0; }
-      .layout { display:grid; grid-template-columns:2fr 1fr; gap:16px; }
-      .panel { background:rgba(10,18,26,0.95); border-radius:12px; padding:12px; }
-      canvas { display:block; width:100%; height:360px; border-radius:8px; background:linear-gradient(180deg,#0a1824,#0f1f2d); }
-      .side { display:flex; flex-direction:column; gap:12px; }
-      .controls { display:flex; gap:8px; flex-wrap:wrap; }
-      .stat-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
-      .stat { background:rgba(255,255,255,0.02); border-radius:8px; padding:10px; }
-      button, select, input { font:inherit; color:var(--text); }
-      button { background:#12334a; padding:8px 10px; border:1px solid rgba(255,255,255,0.04); border-radius:8px; cursor:pointer; }
-      select, input[type="range"] { background:#0c1a26; padding:8px; border:1px solid rgba(255,255,255,0.06); border-radius:8px; }
-      .announce { min-height:48px; padding:8px; background:rgba(122,240,169,0.06); border-radius:8px; }
-      .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
-      @media (max-width:900px){ .layout { grid-template-columns:1fr; } .topbar { flex-direction:column; align-items:flex-start; } }
-      .chart-wrap { height:180px; }
+
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        background: linear-gradient(180deg, var(--bg), var(--bg2));
+        color: var(--text);
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      body {
+        padding: 12px;
+      }
+
+      .app {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 12px;
+        padding: 12px 14px;
+        box-shadow: 0 12px 24px var(--shadow);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.15rem, 2vw, 1.8rem);
+      }
+
+      .controls {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      button, select, input {
+        font: inherit;
+      }
+
+      button {
+        background: linear-gradient(180deg, #194b72, #12314f);
+        color: var(--text);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 8px;
+        padding: 9px 12px;
+        cursor: pointer;
+      }
+
+      button:hover, button:focus-visible {
+        filter: brightness(1.08);
+        outline: 2px solid rgba(122,240,169,0.7);
+        outline-offset: 2px;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 12px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 12px;
+        box-shadow: 0 12px 24px var(--shadow);
+        padding: 12px;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 540px;
+        border-radius: 10px;
+        background: linear-gradient(180deg, #091c29, #0f1d2d);
+        border: 1px solid rgba(255,255,255,0.06);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+        gap: 8px;
+      }
+
+      .stat {
+        background: rgba(255,255,255,0.02);
+        border-radius: 8px;
+        padding: 10px;
+        border: 1px solid rgba(255,255,255,0.04);
+      }
+
+      .stat strong {
+        display: block;
+        color: var(--muted);
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+      }
+
+      .controls2 {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-top: 10px;
+      }
+
+      .controls2 label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .announce {
+        min-height: 54px;
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 8px;
+        background: rgba(122,240,169,0.08);
+        border: 1px solid rgba(122,240,169,0.18);
+      }
+
+      .city-list, .event-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 8px;
+      }
+
+      .city-item, .event-item {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 8px;
+        padding: 8px 10px;
+        color: var(--text);
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+      }
+
+      details {
+        margin-top: 10px;
+        color: var(--muted);
+      }
+
+      select, input[type="range"] {
+        background: #0d1b2a;
+        color: var(--text);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 8px;
+        padding: 8px;
+      }
+
+      @media (max-width: 900px) {
+        .layout { grid-template-columns: 1fr; }
+        .topbar { flex-direction: column; align-items: flex-start; }
+      }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <div class="app">
-      <header class="topbar" aria-label="Başlık ve kontrol çubuğu">
-        <h1>Life-Life — Tam Sürüm</h1>
-        <div class="controls" role="toolbar" aria-label="Genel kontroller">
+      <header class="topbar">
+        <h1>Life-Life — Dünya ve Şehirler</h1>
+        <div class="controls" role="toolbar" aria-label="Oyun kontrolleri">
           <button id="pauseBtn" aria-pressed="false">Duraklat</button>
           <button id="resetBtn">Sıfırla</button>
           <button id="saveBtn">Kaydet</button>
@@ -41,55 +208,69 @@
       </header>
 
       <main class="layout">
-        <section class="panel" aria-label="Oyun alanı">
-          <canvas id="gameCanvas" width="900" height="560" tabindex="0" aria-describedby="gameHint"></canvas>
-          <div id="gameHint" class="sr-only">Oyun alanı. Boşluk: duraklat, artı ve eksi: hız değiştir.</div>
-          <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
-            <label for="speedRange">Hız:</label>
-            <input id="speedRange" type="range" min="0.25" max="3" step="0.25" value="1" aria-label="Simülasyon hızı">
-            <label for="populationSelect">Nüfus:</label>
-            <select id="populationSelect" aria-label="Başlangıç nüfusu seçimi">
-              <option>12</option>
-              <option selected>20</option>
-              <option>35</option>
-              <option>50</option>
+        <section class="panel">
+          <canvas id="gameCanvas" width="960" height="540" tabindex="0" aria-describedby="canvasHelp"></canvas>
+          <div id="canvasHelp" class="sr-only">
+            Dünya haritası. Boşluk tuşuyla oyun duraklatılır ya da devam ettirilir. Haritaya tıklayarak şehirler ve bireyler seçilebilir.
+          </div>
+
+          <div class="controls2">
+            <label for="speedRange">Hız</label>
+            <input id="speedRange" type="range" min="0.5" max="3" step="0.25" value="1" aria-label="Hız ayarı" />
+
+            <label for="populationSelect">Nüfus</label>
+            <select id="populationSelect" aria-label="Başlangıç nüfusu">
+              <option value="20">20</option>
+              <option value="40" selected>40</option>
+              <option value="70">70</option>
+              <option value="100">100</option>
+            </select>
+
+            <label for="modeSelect">Mod</label>
+            <select id="modeSelect" aria-label="Dünya modu">
+              <option value="normal">Normal</option>
+              <option value="global">Global Etkinlikler</option>
             </select>
           </div>
         </section>
 
-        <aside class="panel side" aria-label="İstatistikler ve kontrol panosu">
-          <div class="stat-grid" aria-live="polite">
+        <aside class="panel">
+          <div class="stats" aria-live="polite" aria-atomic="true">
             <div class="stat"><strong>Gün</strong><div id="dayValue">0</div></div>
             <div class="stat"><strong>Nüfus</strong><div id="populationValue">0</div></div>
-            <div class="stat"><strong>Yiyecek</strong><div id="foodValue">0</div></div>
-            <div class="stat"><strong>Mutluluk</strong><div id="happinessValue">0</div></div>
+            <div class="stat"><strong>Şehir Sayısı</strong><div id="cityCountValue">0</div></div>
+            <div class="stat"><strong>Mutluluk</strong><div id="happinessValue">0%</div></div>
           </div>
 
-          <div class="controls">
-            <label for="agentJobSelect">Birey işi:</label>
-            <select id="agentJobSelect" aria-label="İş seçimi">
-              <option value="auto">Otomatik</option>
-              <option value="worker">Worker</option>
-              <option value="farmer">Farmer</option>
-              <option value="none">None</option>
+          <div id="announcer" class="announce" role="status" aria-live="polite" aria-atomic="true">
+            Simülasyon hazır. Oynamaya başlamak için duraklat butonuna basın.
+          </div>
+
+          <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <label for="jobSelect">Seçili birey iş:</label>
+            <select id="jobSelect" aria-label="Birey işi seçimi">
+              <option value="none">Yok</option>
+              <option value="worker">Çalışan</option>
+              <option value="artist">Sanatçı</option>
+              <option value="merchant">Tüccar</option>
+              <option value="scientist">Bilim insanı</option>
             </select>
             <button id="assignJobBtn">Ata</button>
           </div>
 
-          <div class="chart-wrap panel" style="padding:8px;">
-            <canvas id="popChart" aria-label="Nüfus grafiği"></canvas>
-          </div>
+          <h3 style="margin: 12px 0 8px;">Şehirler</h3>
+          <div id="cityList" class="city-list" aria-live="polite"></div>
 
-          <div id="announcer" class="announce" role="status" aria-live="polite" aria-atomic="true">Simülasyon hazır.</div>
+          <h3 style="margin: 12px 0 8px;">Dünya Etkinlikleri</h3>
+          <div id="eventList" class="event-list" aria-live="polite"></div>
 
           <details>
             <summary>Kısa talimat</summary>
             <ul>
-              <li>Boşluk: duraklat / devam</li>
-              <li>+: hız arttır</li>
-              <li>-: hız azalt</li>
+              <li>Boşluk: duraklat / devam ettir</li>
               <li>R: sıfırla</li>
-              <li>Haritaya tıklayıp birey seçin, ardından iş atayın.</li>
+              <li>+ / -: hız ayarla</li>
+              <li>Haritaya tıklayıp birey veya şehri seçin</li>
             </ul>
           </details>
         </aside>
@@ -97,268 +278,561 @@
     </div>
 
     <script>
-      (function(){
+      (() => {
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+
         const dayValue = document.getElementById('dayValue');
         const populationValue = document.getElementById('populationValue');
-        const foodValue = document.getElementById('foodValue');
+        const cityCountValue = document.getElementById('cityCountValue');
         const happinessValue = document.getElementById('happinessValue');
+        const announcer = document.getElementById('announcer');
+        const cityList = document.getElementById('cityList');
+        const eventList = document.getElementById('eventList');
+        const speedRange = document.getElementById('speedRange');
+        const populationSelect = document.getElementById('populationSelect');
+        const modeSelect = document.getElementById('modeSelect');
+        const jobSelect = document.getElementById('jobSelect');
         const pauseBtn = document.getElementById('pauseBtn');
         const resetBtn = document.getElementById('resetBtn');
         const saveBtn = document.getElementById('saveBtn');
         const loadBtn = document.getElementById('loadBtn');
-        const popSelect = document.getElementById('populationSelect');
-        const speedRange = document.getElementById('speedRange');
-        const announcer = document.getElementById('announcer');
-        const agentJobSelect = document.getElementById('agentJobSelect');
         const assignJobBtn = document.getElementById('assignJobBtn');
 
-        const popCtx = document.getElementById('popChart').getContext('2d');
-        const popChart = new Chart(popCtx, {
-          type: 'line',
-          data: {
-            labels: [],
-            datasets: [{
-              label: 'Nüfus',
-              data: [],
-              borderColor: '#7af0a9',
-              backgroundColor: 'rgba(122,240,169,0.12)',
-              tension: 0.3
-            }]
-          },
-          options: { responsive: true, maintainAspectRatio: false, scales: { x: { display: false } } }
-        });
+        const WORLD = {
+          width: 100,
+          height: 60,
+          cell: 10,
+          day: 0,
+          running: true,
+          tickMs: 75,
+          timeAccum: 0,
+          selectedAgent: null,
+          saveKey: 'life-life-save-v2',
+          cities: [],
+          agents: [],
+          events: [],
+          trending: [],
+          history: []
+        };
 
-        let audioCtx = null;
-        function beep(freq=440,dur=0.06,vol=0.04){
-          try {
-            if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine'; osc.frequency.value = freq; gain.gain.value = vol;
-            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + dur);
-          } catch (e) {}
+        const CITY_BLUEPRINTS = [
+          { name: 'İstanbul', x: 28, y: 28, economy: 0.95, culture: 0.9 },
+          { name: 'New York', x: 72, y: 18, economy: 1.2, culture: 1.0 },
+          { name: 'Tokyo', x: 82, y: 38, economy: 1.25, culture: 1.1 },
+          { name: 'Paris', x: 62, y: 28, economy: 0.85, culture: 1.2 },
+          { name: 'São Paulo', x: 46, y: 48, economy: 0.9, culture: 0.85 },
+          { name: 'Dubai', x: 66, y: 42, economy: 1.1, culture: 0.7 },
+          { name: 'Singapore', x: 78, y: 52, economy: 1.15, culture: 0.8 },
+          { name: 'Berlin', x: 55, y: 22, economy: 0.8, culture: 0.9 },
+          { name: 'Sydney', x: 90, y: 62, economy: 0.8, culture: 0.7 }
+        ];
+
+        const TRENDING_ITEMS = [
+          { name: 'Müzik Festivali', mood: 18, attraction: 1.2 },
+          { name: 'AI Fuarı', mood: 12, attraction: 1.0 },
+          { name: 'Dünya Kupası', mood: 22, attraction: 1.4 },
+          { name: 'Film Premiyeri', mood: 15, attraction: 1.1 },
+          { name: 'Teknoloji Konferansı', mood: 14, attraction: 1.0 },
+          { name: 'Spor Finali', mood: 20, attraction: 1.3 },
+          { name: 'Sanat Bienali', mood: 11, attraction: 0.9 },
+          { name: 'Gıda Festivali', mood: 10, attraction: 0.8 }
+        ];
+
+        function announce(message) {
+          announcer.textContent = message;
+          console.log(message);
         }
 
-        const world = { width:90, height:56, cell:10, agents:[], buildings:[], day:0, running:true, tickMs:60, timeAcc:0, saveKey:'life-life-save', selected:null, history:[] };
-
-        function announce(msg){ announcer.textContent = msg; console.log(msg); }
-        function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
-
-        function seedBuildings(){
-          world.buildings = [
-            {x:15,y:12,type:'home'},{x:36,y:18,type:'home'},{x:64,y:14,type:'home'},{x:72,y:34,type:'home'},
-            {x:12,y:34,type:'food'},{x:27,y:44,type:'food'},{x:44,y:32,type:'food'},{x:68,y:42,type:'food'},{x:81,y:18,type:'food'},
-            {x:50,y:15,type:'work'},{x:58,y:42,type:'work'},{x:24,y:24,type:'work'}
-          ];
+        function clamp(value, min, max) {
+          return Math.max(min, Math.min(max, value));
         }
 
-        function createAgent(id){
+        function createCity(def) {
           return {
-            id,
-            x:45 + Math.cos(Math.random()*Math.PI*2) * (5 + Math.random()*20),
-            y:28 + Math.sin(Math.random()*Math.PI*2) * (5 + Math.random()*20),
-            hunger:25 + Math.random()*40,
-            energy:60 + Math.random()*35,
-            happiness:55 + Math.random()*35,
-            age:0,
-            speed:0.45 + Math.random()*0.7,
-            state:'idle',
-            job:Math.random() < 0.6 ? 'worker' : 'free',
-            target:null
+            ...def,
+            happiness: 58 + Math.random() * 20,
+            economy: def.economy,
+            culture: def.culture
           };
         }
 
-        function resetWorld(count = Number(popSelect.value)){
-          world.day = 0;
-          world.agents = Array.from({ length: count }, (_, i) => createAgent(i + 1));
-          world.history = [world.agents.length];
-          seedBuildings();
-          world.selected = null;
-          announce(`${count} birey oluşturuldu.`);
-          updateChart();
-          renderUI();
-          draw();
+        function createAgent(id, cityName) {
+          const city = WORLD.cities.find(c => c.name === cityName) || WORLD.cities[0];
+          const angle = Math.random() * Math.PI * 2;
+          const radius = 1 + Math.random() * 4;
+          return {
+            id,
+            name: `Birey ${id}`,
+            x: city.x + Math.cos(angle) * radius,
+            y: city.y + Math.sin(angle) * radius,
+            hunger: 25 + Math.random() * 45,
+            energy: 60 + Math.random() * 25,
+            happiness: 55 + Math.random() * 30,
+            wealth: 30 + Math.random() * 40,
+            age: 18 + Math.random() * 30,
+            city: city.name,
+            state: 'idle',
+            target: null,
+            style: ['worker', 'artist', 'merchant', 'scientist'][Math.floor(Math.random() * 4)],
+            job: 'none'
+          };
         }
 
-        function findNearestBuilding(agent, type){
-          let best = null; let min = Infinity;
-          for (const b of world.buildings){ if(b.type !== type) continue; const d = Math.hypot(b.x - agent.x, b.y - agent.y); if(d < min){ min = d; best = b; } }
+        function initCities() {
+          WORLD.cities = CITY_BLUEPRINTS.map(createCity);
+        }
+
+        function resetWorld(popCount = Number(populationSelect.value)) {
+          WORLD.day = 0;
+          WORLD.agents = [];
+          WORLD.events = [];
+          WORLD.trending = [];
+          WORLD.history = [];
+          WORLD.selectedAgent = null;
+          const cityCounts = Math.max(1, Math.floor(popCount / WORLD.cities.length));
+          let id = 1;
+          for (const city of WORLD.cities) {
+            for (let i = 0; i < cityCounts; i++) {
+              WORLD.agents.push(createAgent(id++, city.name));
+            }
+          }
+          // ensure total pop matches requested count roughly
+          while (WORLD.agents.length < popCount) {
+            const city = WORLD.cities[Math.floor(Math.random() * WORLD.cities.length)];
+            WORLD.agents.push(createAgent(id++, city.name));
+          }
+          WORLD.history.push(WORLD.agents.length);
+          announce(`${WORLD.agents.length} birey ve ${WORLD.cities.length} şehir hazır.`);
+          renderUI();
+          draw();
+          refreshLists();
+        }
+
+        function nearestCity(x, y) {
+          let best = null;
+          let bestDist = Infinity;
+          for (const city of WORLD.cities) {
+            const d = Math.hypot(city.x - x, city.y - y);
+            if (d < bestDist) {
+              bestDist = d;
+              best = city;
+            }
+          }
           return best;
         }
 
-        function chooseTarget(agent){
-          if(agent.hunger > 70){ const f = findNearestBuilding(agent,'food'); if(f){ agent.state='food'; agent.target=f; return; } }
-          if(agent.energy < 35){ const h = findNearestBuilding(agent,'home'); if(h){ agent.state='rest'; agent.target=h; return; } }
-          if(agent.job === 'worker' && agent.happiness > 40 && Math.random() < 0.02){ const w = findNearestBuilding(agent,'work'); if(w){ agent.state='work'; agent.target=w; return; } }
-          agent.state = 'idle';
-          agent.target = { x:15 + Math.random() * (world.width - 30), y:15 + Math.random() * (world.height - 30) };
+        function addTrendingEvent() {
+          if (modeSelect.value !== 'global') return;
+          const trend = TRENDING_ITEMS[Math.floor(Math.random() * TRENDING_ITEMS.length)];
+          const city = WORLD.cities[Math.floor(Math.random() * WORLD.cities.length)];
+          WORLD.events.push({
+            id: Date.now() + Math.random(),
+            name: trend.name,
+            city: city.name,
+            life: 200 + Math.random() * 200,
+            mood: trend.mood,
+            attraction: trend.attraction
+          });
+          WORLD.trending.push(trend.name);
+          announce(`${trend.name} etkinliği ${city.name} şehrinde başladı.`);
         }
 
-        function updateAgent(agent){
-          agent.age += 1;
-          agent.hunger += 0.22;
-          agent.energy -= 0.16;
-          agent.happiness -= 0.04;
-          if(agent.hunger > 99 || agent.energy < 0){ return false; }
-          if(agent.state === 'idle' || !agent.target){ chooseTarget(agent); }
-          if(agent.target){
-            const dx = agent.target.x - agent.x; const dy = agent.target.y - agent.y; const d = Math.hypot(dx,dy); const step = agent.speed * (world.tickMs/1000) * 45;
-            if(d > 0.5){ agent.x += (dx / d) * step; agent.y += (dy / d) * step; }
-            else {
-              if(agent.state === 'food'){ agent.hunger = Math.max(0, agent.hunger - 55); agent.happiness = Math.min(100, agent.happiness + 12); beep(880,0.06,0.02); }
-              else if(agent.state === 'rest'){ agent.energy = Math.min(100, agent.energy + 46); agent.happiness = Math.min(100, agent.happiness + 8); beep(660,0.06,0.02); }
-              else if(agent.state === 'work'){ agent.energy = Math.max(0, agent.energy - 20); agent.happiness = Math.min(100, agent.happiness + 6); }
-              agent.state = 'idle'; agent.target = null;
+        function chooseTarget(agent) {
+          if (agent.hunger > 70) {
+            const city = WORLD.cities.find(c => c.name === agent.city);
+            if (city) {
+              agent.target = { x: city.x + (Math.random() - 0.5) * 6, y: city.y + (Math.random() - 0.5) * 6 };
+              agent.state = 'food';
+              return;
             }
           }
-          if(agent.hunger < 50 && agent.energy > 40 && Math.random() < 0.008 && agent.age > 40){
-            const child = createAgent(Math.floor(agent.id * 1000 + Math.random() * 1000));
-            child.x = agent.x + 1; child.y = agent.y + 1;
-            world.agents.push(child); announce(`Yeni birey: ${child.id}`); beep(1200,0.08,0.03);
+
+          if (agent.energy < 35) {
+            const city = WORLD.cities.find(c => c.name === agent.city);
+            if (city) {
+              agent.target = { x: city.x + (Math.random() - 0.5) * 5, y: city.y + (Math.random() - 0.5) * 5 };
+              agent.state = 'rest';
+              return;
+            }
           }
-          agent.happiness = clamp(agent.happiness + (agent.hunger < 55 ? -0.6 : 0.6), 0, 100);
+
+          if (agent.job === 'worker' && Math.random() < 0.08) {
+            const targetCity = WORLD.cities[Math.floor(Math.random() * WORLD.cities.length)];
+            agent.target = { x: targetCity.x, y: targetCity.y };
+            agent.state = 'work';
+            return;
+          }
+
+          const city = WORLD.cities[Math.floor(Math.random() * WORLD.cities.length)];
+          agent.target = { x: city.x + (Math.random() - 0.5) * 5, y: city.y + (Math.random() - 0.5) * 5 };
+          agent.state = 'idle';
+        }
+
+        function applyEventBoost(agent) {
+          const event = WORLD.events.find(e => e.city === agent.city);
+          if (!event) return;
+          agent.happiness = clamp(agent.happiness + event.mood * 0.15, 0, 100);
+          agent.wealth = clamp(agent.wealth + event.attraction * 3, 0, 200);
+        }
+
+        function updateAgent(agent) {
+          agent.age += 0.4;
+          agent.hunger += 0.28;
+          agent.energy -= 0.18;
+          agent.happiness -= 0.08;
+
+          if (agent.hunger > 95 || agent.energy < 0) {
+            return false;
+          }
+
+          if (!agent.target || agent.state === 'idle') {
+            chooseTarget(agent);
+          }
+
+          if (agent.target) {
+            const dx = agent.target.x - agent.x;
+            const dy = agent.target.y - agent.y;
+            const dist = Math.hypot(dx, dy);
+            const speed = agent.speed * (Number(speedRange.value) || 1) * 0.9;
+
+            if (dist > 0.4) {
+              agent.x += (dx / dist) * speed;
+              agent.y += (dy / dist) * speed;
+            } else {
+              if (agent.state === 'food') {
+                agent.hunger = clamp(agent.hunger - 50, 0, 100);
+                agent.happiness = clamp(agent.happiness + 12, 0, 100);
+              } else if (agent.state === 'rest') {
+                agent.energy = clamp(agent.energy + 48, 0, 100);
+                agent.happiness = clamp(agent.happiness + 8, 0, 100);
+              } else if (agent.state === 'work') {
+                agent.wealth = clamp(agent.wealth + 6, 0, 200);
+                agent.happiness = clamp(agent.happiness + 7, 0, 100);
+              }
+
+              agent.state = 'idle';
+              agent.target = null;
+            }
+          }
+
+          if (modeSelect.value === 'global' && Math.random() < 0.008) {
+            applyEventBoost(agent);
+          }
+
+          if (agent.hunger < 40 && Math.random() < 0.02 && agent.age > 22) {
+            const city = WORLD.cities.find(c => c.name === agent.city) || WORLD.cities[0];
+            const child = createAgent(Date.now() + Math.random() * 10000, city.name);
+            child.x = agent.x + 0.5;
+            child.y = agent.y + 0.5;
+            WORLD.agents.push(child);
+            announce(`Yeni birey doğdu: ${child.name}.`);
+          }
+
+          agent.happiness = clamp(agent.happiness + (agent.hunger < 50 ? -0.8 : 0.5), 0, 100);
           return true;
         }
 
-        function updateSimulation(){
-          if(!world.running) return;
-          world.timeAcc += world.tickMs * Number(speedRange.value || 1);
-          while(world.timeAcc >= world.tickMs){
-            world.day += 1;
-            world.timeAcc -= world.tickMs;
-            for(let i = world.agents.length - 1; i >= 0; i--){
-              const ok = updateAgent(world.agents[i]);
-              if(!ok){
-                world.agents.splice(i,1);
-                announce(`Birey öldü. Kalan nüfus: ${world.agents.length}`);
-                beep(220,0.12,0.04);
+        function updateSimulation() {
+          if (!WORLD.running) return;
+
+          WORLD.timeAccum += WORLD.tickMs * Number(speedRange.value || 1);
+          while (WORLD.timeAccum >= WORLD.tickMs) {
+            WORLD.timeAccum -= WORLD.tickMs;
+            WORLD.day += 1;
+
+            if (modeSelect.value === 'global' && Math.random() < 0.06) {
+              addTrendingEvent();
+            }
+
+            for (const event of WORLD.events) {
+              event.life -= 1;
+            }
+            WORLD.events = WORLD.events.filter(e => e.life > 0);
+
+            for (let i = WORLD.agents.length - 1; i >= 0; i--) {
+              const ok = updateAgent(WORLD.agents[i]);
+              if (!ok) {
+                WORLD.agents.splice(i, 1);
               }
             }
-            if(world.agents.length === 0){
-              announce('Tüm bireyler öldü. Sıfırlamak için butona basın.');
-              world.running = false; pauseBtn.textContent = 'Devam Et'; pauseBtn.setAttribute('aria-pressed','true');
-              break;
+
+            for (const city of WORLD.cities) {
+              const local = WORLD.agents.filter(a => a.city === city.name);
+              city.happiness = local.length > 0
+                ? local.reduce((sum, a) => sum + a.happiness, 0) / local.length
+                : city.happiness * 0.9;
             }
-            world.history.push(world.agents.length);
-            if(world.history.length > 120){ world.history.shift(); }
-            updateChart();
+
+            if (WORLD.agents.length > 0) {
+              WORLD.history.push(WORLD.agents.length);
+              if (WORLD.history.length > 80) WORLD.history.shift();
+            }
           }
-          renderUI(); draw();
+
+          renderUI();
+          refreshLists();
+          draw();
         }
 
-        function draw(){
-          ctx.clearRect(0,0,canvas.width,canvas.height);
-          ctx.fillStyle='#0b1925'; ctx.fillRect(0,0,canvas.width,canvas.height);
-          ctx.fillStyle='rgba(255,255,255,0.03)';
-          for(let x=0; x<=world.width; x++){ ctx.fillRect(x * world.cell, 0, 1, canvas.height); }
-          for(let y=0; y<=world.height; y++){ ctx.fillRect(0, y * world.cell, canvas.width, 1); }
-          for(const b of world.buildings){
-            const dx=b.x*world.cell, dy=b.y*world.cell;
-            if(b.type === 'food'){ ctx.fillStyle='#f7d77a'; ctx.fillRect(dx-8,dy-8,16,16); }
-            else if(b.type === 'home'){ ctx.fillStyle='#7cc7ff'; ctx.beginPath(); ctx.arc(dx,dy,8,0,Math.PI*2); ctx.fill(); }
-            else if(b.type === 'work'){ ctx.fillStyle='#b48cff'; ctx.fillRect(dx-9,dy-7,18,14); }
-          }
-          for(const a of world.agents){
-            const x=a.x * world.cell; const y=a.y * world.cell; const hue = 120 - (a.happiness/100) * 70;
-            ctx.fillStyle = `hsl(${hue}, 80%, 62%)`;
-            ctx.beginPath(); ctx.arc(x,y,5,0,Math.PI*2); ctx.fill();
-            if(world.selected && world.selected.id === a.id){ ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(x,y,8,0,Math.PI*2); ctx.stroke(); }
-          }
+        function updateCityList() {
+          cityList.innerHTML = WORLD.cities
+            .map(city => {
+              const localCount = WORLD.agents.filter(a => a.city === city.name).length;
+              return `<div class="city-item"><strong>${city.name}</strong> — Mutluluk ${Math.round(city.happiness)} — Birey ${localCount}</div>`;
+            })
+            .join('');
         }
 
-        function renderUI(){
-          const total = world.agents.reduce((s,a) => s + a.happiness, 0);
-          const avg = world.agents.length ? Math.round(total / world.agents.length) : 0;
-          dayValue.textContent = String(world.day);
-          populationValue.textContent = String(world.agents.length);
-          foodValue.textContent = String(world.buildings.filter(b => b.type === 'food').length);
+        function updateEventList() {
+          if (!WORLD.events.length) {
+            eventList.innerHTML = '<div class="event-item">Etkinlik yok</div>';
+            return;
+          }
+          eventList.innerHTML = WORLD.events
+            .map(event => `<div class="event-item"><strong>${event.name}</strong> — ${event.city} — kalan ${Math.round(event.life)}</div>`)
+            .join('');
+        }
+
+        function refreshLists() {
+          updateCityList();
+          updateEventList();
+        }
+
+        function renderUI() {
+          const avg = WORLD.agents.length
+            ? Math.round(WORLD.agents.reduce((sum, a) => sum + a.happiness, 0) / WORLD.agents.length)
+            : 0;
+          dayValue.textContent = String(WORLD.day);
+          populationValue.textContent = String(WORLD.agents.length);
+          cityCountValue.textContent = String(WORLD.cities.length);
           happinessValue.textContent = `${avg}%`;
         }
 
-        function updateChart(){
-          popChart.data.labels = world.history.map((_, idx) => idx);
-          popChart.data.datasets[0].data = world.history.slice();
-          popChart.update();
-        }
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = '#071d2d';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        function saveState(){
-          localStorage.setItem(world.saveKey, JSON.stringify({ day: world.day, agents: world.agents, buildings: world.buildings, history: world.history }));
-          announce('Kaydedildi.');
-        }
-
-        function loadState(){
-          const raw = localStorage.getItem(world.saveKey); if(!raw){ announce('Kayıt yok.'); return; }
-          try{
-            const s = JSON.parse(raw);
-            world.day = s.day || 0;
-            world.agents = Array.isArray(s.agents) ? s.agents : [];
-            world.buildings = Array.isArray(s.buildings) && s.buildings.length ? s.buildings : [];
-            world.history = Array.isArray(s.history) && s.history.length ? s.history : [world.agents.length];
-            world.running = true; pauseBtn.textContent = 'Duraklat'; pauseBtn.setAttribute('aria-pressed','false');
-            announce('Kayıt yüklendi.');
-            renderUI(); updateChart(); draw();
-          } catch(e){ announce('Yükleme hatası.'); }
-        }
-
-        function togglePause(){
-          world.running = !world.running;
-          pauseBtn.textContent = world.running ? 'Duraklat' : 'Devam Et';
-          pauseBtn.setAttribute('aria-pressed', String(!world.running));
-          announce(world.running ? 'Simülasyon devam ediyor.' : 'Simülasyon duraklatıldı.');
-        }
-
-        function assignSelectedJob(){
-          if(!world.selected){ announce('Önce bir birey seçin.'); return; }
-          const job = agentJobSelect.value;
-          if(job === 'auto'){ world.selected.job = Math.random() < 0.6 ? 'worker' : 'farmer'; }
-          else { world.selected.job = job; }
-          announce(`Birey ${world.selected.id} iş atandı: ${world.selected.job}`);
-        }
-
-        canvas.addEventListener('click', (ev) => {
-          const rect = canvas.getBoundingClientRect();
-          const x = ((ev.clientX - rect.left) / rect.width) * world.width;
-          const y = ((ev.clientY - rect.top) / rect.height) * world.height;
-          let nearest = null; let nd = Infinity;
-          for(const a of world.agents){ const d = Math.hypot(a.x - x, a.y - y); if(d < nd){ nd = d; nearest = a; } }
-          if(nearest && nd < 5){
-            world.selected = nearest;
-            announce(`Seçildi: birey ${nearest.id} | açlık ${Math.round(nearest.hunger)} | enerji ${Math.round(nearest.energy)} | mutluluk ${Math.round(nearest.happiness)}`);
-          } else {
-            world.selected = null; announce('Yakınında birey yok.');
+          ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+          ctx.lineWidth = 1;
+          for (let x = 0; x <= WORLD.width; x++) {
+            ctx.beginPath();
+            ctx.moveTo(x * WORLD.cell, 0);
+            ctx.lineTo(x * WORLD.cell, canvas.height);
+            ctx.stroke();
           }
-          draw();
-        });
+          for (let y = 0; y <= WORLD.height; y++) {
+            ctx.beginPath();
+            ctx.moveTo(0, y * WORLD.cell);
+            ctx.lineTo(canvas.width, y * WORLD.cell);
+            ctx.stroke();
+          }
 
-        pauseBtn.addEventListener('click', togglePause);
-        resetBtn.addEventListener('click', () => resetWorld(Number(popSelect.value)));
-        saveBtn.addEventListener('click', saveState);
-        loadBtn.addEventListener('click', loadState);
-        assignJobBtn.addEventListener('click', assignSelectedJob);
+          // draw cities
+          for (const city of WORLD.cities) {
+            const x = city.x * WORLD.cell;
+            const y = city.y * WORLD.cell;
+            ctx.beginPath();
+            ctx.arc(x, y, 12, 0, Math.PI * 2);
+            ctx.fillStyle = '#4a95c9';
+            ctx.fill();
+            ctx.strokeStyle = '#bfe9ff';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.fillStyle = '#fff';
+            ctx.font = '10px Arial';
+            ctx.fillText(city.name, x + 14, y + 4);
+          }
 
-        document.addEventListener('keydown', (e)=>{
-          if(e.code === 'Space'){ e.preventDefault(); togglePause(); }
-          if(e.key === '+'){ speedRange.value = String(Math.min(3, Number(speedRange.value) + 0.25)); announce(`Hız: ${speedRange.value}`); }
-          if(e.key === '-'){ speedRange.value = String(Math.max(0.25, Number(speedRange.value) - 0.25)); announce(`Hız: ${speedRange.value}`); }
-          if(e.key.toLowerCase() === 'r'){ resetWorld(Number(popSelect.value)); }
-        });
+          // draw events as floating beacons
+          for (const event of WORLD.events) {
+            const city = WORLD.cities.find(c => c.name === event.city);
+            if (!city) continue;
+            const x = city.x * WORLD.cell;
+            const y = city.y * WORLD.cell - 20;
+            ctx.fillStyle = '#f7d77a';
+            ctx.beginPath();
+            ctx.arc(x, y, 7, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.font = '10px Arial';
+            ctx.fillText(event.name, x + 12, y - 8);
+          }
 
-        speedRange.addEventListener('input', () => announce(`Hız: ${speedRange.value}`));
-        popSelect.addEventListener('change', () => resetWorld(Number(popSelect.value)));
+          // draw agents
+          for (const agent of WORLD.agents) {
+            const x = agent.x * WORLD.cell;
+            const y = agent.y * WORLD.cell;
+            const hue = 120 - (agent.happiness / 100) * 70;
+            ctx.beginPath();
+            ctx.fillStyle = `hsl(${hue}, 80%, 60%)`;
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fill();
 
-        function resize(){
+            if (WORLD.selectedAgent && WORLD.selectedAgent.id === agent.id) {
+              ctx.beginPath();
+              ctx.strokeStyle = '#ffffff';
+              ctx.lineWidth = 2;
+              ctx.arc(x, y, 9, 0, Math.PI * 2);
+              ctx.stroke();
+            }
+          }
+        }
+
+        function saveState() {
+          localStorage.setItem(WORLD.saveKey, JSON.stringify({
+            day: WORLD.day,
+            running: WORLD.running,
+            cities: WORLD.cities,
+            agents: WORLD.agents,
+            events: WORLD.events,
+            history: WORLD.history,
+            selectedAgentId: WORLD.selectedAgent ? WORLD.selectedAgent.id : null
+          }));
+          announce('Oyun kaydedildi.');
+        }
+
+        function loadState() {
+          const raw = localStorage.getItem(WORLD.saveKey);
+          if (!raw) {
+            announce('Kaydedilmiş oyun bulunamadı.');
+            return;
+          }
+
+          try {
+            const data = JSON.parse(raw);
+            WORLD.day = data.day || 0;
+            WORLD.running = data.running !== false;
+            WORLD.cities = Array.isArray(data.cities) && data.cities.length ? data.cities : CITY_BLUEPRINTS.map(createCity);
+            WORLD.agents = Array.isArray(data.agents) ? data.agents : [];
+            WORLD.events = Array.isArray(data.events) ? data.events : [];
+            WORLD.history = Array.isArray(data.history) ? data.history : [];
+            WORLD.selectedAgent = WORLD.agents.find(a => a.id === (data.selectedAgentId || null)) || null;
+            announce('Kayıt yüklendi.');
+            renderUI();
+            refreshLists();
+            draw();
+          } catch (error) {
+            announce('Kayıt yüklenirken hata oluştu.');
+          }
+        }
+
+        function assignSelectedJob() {
+          if (!WORLD.selectedAgent) {
+            announce('Önce bir birey seçin.');
+            return;
+          }
+          WORLD.selectedAgent.job = jobSelect.value;
+          announce(`${WORLD.selectedAgent.name} için iş: ${WORLD.selectedAgent.job}`);
+        }
+
+        function togglePause() {
+          WORLD.running = !WORLD.running;
+          pauseBtn.textContent = WORLD.running ? 'Duraklat' : 'Devam Et';
+          pauseBtn.setAttribute('aria-pressed', String(!WORLD.running));
+          announce(WORLD.running ? 'Simülasyon devam ediyor.' : 'Simülasyon duraklatıldı.');
+        }
+
+        function handleCanvasClick(event) {
           const rect = canvas.getBoundingClientRect();
-          canvas.width = rect.width; canvas.height = Math.max(240, rect.height);
+          const x = ((event.clientX - rect.left) / rect.width) * WORLD.width;
+          const y = ((event.clientY - rect.top) / rect.height) * WORLD.height;
+
+          let nearestAgent = null;
+          let bestDistance = Infinity;
+
+          for (const agent of WORLD.agents) {
+            const d = Math.hypot(agent.x - x, agent.y - y);
+            if (d < bestDistance) {
+              bestDistance = d;
+              nearestAgent = agent;
+            }
+          }
+
+          if (nearestAgent && bestDistance < 2.2) {
+            WORLD.selectedAgent = nearestAgent;
+            announce(`Seçildi: ${nearestAgent.name} — ${nearestAgent.city} — Açlık ${Math.round(nearestAgent.hunger)}, Enerji ${Math.round(nearestAgent.energy)}, Mutluluk ${Math.round(nearestAgent.happiness)}.`);
+          } else {
+            const city = nearestCity(x, y);
+            if (city) {
+              WORLD.selectedAgent = null;
+              announce(`Şehir seçildi: ${city.name}.`);
+            }
+          }
+
           draw();
         }
-        window.addEventListener('resize', resize);
 
-        seedBuildings();
-        resetWorld(Number(popSelect.value));
-        resize();
-        setInterval(updateSimulation, world.tickMs);
+        function attachEvents() {
+          pauseBtn.addEventListener('click', togglePause);
+          resetBtn.addEventListener('click', () => resetWorld(Number(populationSelect.value)));
+          saveBtn.addEventListener('click', saveState);
+          loadBtn.addEventListener('click', loadState);
+          assignJobBtn.addEventListener('click', assignSelectedJob);
+
+          document.addEventListener('keydown', (event) => {
+            if (event.code === 'Space') {
+              event.preventDefault();
+              togglePause();
+            }
+            if (event.key === '+') {
+              speedRange.value = String(Math.min(3, Number(speedRange.value) + 0.25));
+              announce(`Hız: ${speedRange.value}`);
+            }
+            if (event.key === '-') {
+              speedRange.value = String(Math.max(0.5, Number(speedRange.value) - 0.25));
+              announce(`Hız: ${speedRange.value}`);
+            }
+            if (event.key.toLowerCase() === 'r') {
+              resetWorld(Number(populationSelect.value));
+            }
+          });
+
+          canvas.addEventListener('click', handleCanvasClick);
+          speedRange.addEventListener('input', () => {
+            announce(`Hız ayarı: ${speedRange.value}`);
+          });
+          populationSelect.addEventListener('change', () => resetWorld(Number(populationSelect.value)));
+          modeSelect.addEventListener('change', () => {
+            if (modeSelect.value === 'global') {
+              announce('Global etkinlik modu açıldı.');
+            } else {
+              announce('Normal moda geçildi.');
+            }
+          });
+        }
+
+        function loadAutoSave() {
+          try {
+            const raw = localStorage.getItem(WORLD.saveKey);
+            if (!raw) return;
+            const data = JSON.parse(raw);
+            WORLD.day = data.day || 0;
+            WORLD.cities = Array.isArray(data.cities) && data.cities.length ? data.cities : CITY_BLUEPRINTS.map(createCity);
+            WORLD.agents = Array.isArray(data.agents) ? data.agents : [];
+            WORLD.events = Array.isArray(data.events) ? data.events : [];
+            WORLD.history = Array.isArray(data.history) ? data.history : [];
+            WORLD.selectedAgent = WORLD.agents.find(a => a.id === (data.selectedAgentId || null)) || null;
+            announce('Otomatik kayıt yüklendi.');
+          } catch (error) {
+            // ignore invalid autosave
+          }
+        }
+
+        function boot() {
+          initCities();
+          loadAutoSave();
+          if (!WORLD.agents.length) resetWorld(Number(populationSelect.value));
+          refreshLists();
+          renderUI();
+          draw();
+          attachEvents();
+          window.addEventListener('beforeunload', () => saveState());
+          setInterval(updateSimulation, WORLD.tickMs);
+        }
+
+        boot();
       })();
     </script>
   </body>
